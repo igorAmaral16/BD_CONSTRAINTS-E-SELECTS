@@ -137,4 +137,28 @@ go
 select nome_real from estrela where nome = 'Michael Keaton'
 go
 select num_cadastro, nome, logradouro+'' + Convert(char(10),num)+''+cep as end_comp from cliente where num_cadastro >= 5503
+go
+-------------------------------------ATIVIDADE 2-------------------------------------------
+SELECT id, ano, CASE WHEN LEN(titulo) > 10 THEN 
+		RTRIM(SUBSTRING(titulo,1,10)) + '...' 
+	ELSE 
+		titulo
+	END AS Titulo FROM filme WHERE id IN (
+		SELECT filme_id FROM dvd WHERE dataFabricacao > '01/01/2020'
+)
 
+SELECT DISTINCT num, dataFabricacao, DATEDIFF(MONTH, dataFabricacao, GETDATE()) AS Meses_Fabricado FROM dvd WHERE filme_id IN(
+	SELECT id FROM filme WHERE titulo = 'Interestelar'
+)
+
+SELECT DISTINCT dvdNum, dataLocacao, dataDevolucao, DATEDIFF(DAY, dataLocacao, dataDevolucao) AS dias_alugados, valor FROM locacao
+ WHERE clienteNum_cadastro IN (
+	SELECT num_cadastro FROM cliente WHERE nome LIKE '%rosa%'
+)
+
+SELECT nome, logradouro +  ', Num°: ' + 
+	CAST(num AS varchar(5)) AS logradouro,
+		SUBSTRING(cep,1,5) + '-' + SUBSTRING(cep,6,3) AS cep 
+			FROM cliente WHERE num_cadastro IN (
+				SELECT clienteNum_cadastro FROM locacao WHERE dvdNum = 10002
+			)

@@ -71,3 +71,34 @@ go
 delete users_has_projects where users_id = 2
 go
 select * from users_has_projects
+
+----------------------------------------ATIVIDADE 2----------------------------
+
+SELECT id, name, email, username, 
+	CASE WHEN password = '123mudar' THEN
+		password
+	ELSE
+		'********'
+	END AS password
+FROM users
+
+SELECT name, data from projects
+SELECT name, description, DATEADD(DAY, 15, data) AS data_final 
+FROM projects WHERE id IN (
+	SELECT projects_id FROM users_has_projects WHERE users_id IN(
+		SELECT id FROM users WHERE email = 'aparecido@empresa.com'
+	)
+)
+
+SELECT name, email FROM users WHERE id IN (
+	SELECT users_id FROM users_has_projects WHERE projects_id IN(
+		SELECT id FROM projects WHERE name = 'Auditoria'
+	)
+)
+
+SELECT name, description, 
+	CONVERT(CHAR(10), data, 103) AS data_inicial, 
+	CONVERT(CHAR(10), '2014-09-16', 103) AS data_final,
+	DATEDIFF(DAY, data, '2014-09-16') * 79.85 AS custo_total
+	FROM projects WHERE name LIKE '%manutenção%'
+
