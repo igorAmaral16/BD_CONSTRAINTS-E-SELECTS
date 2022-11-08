@@ -162,3 +162,40 @@ SELECT nome, logradouro +  ', Num°: ' +
 			FROM cliente WHERE num_cadastro IN (
 				SELECT clienteNum_cadastro FROM locacao WHERE dvdNum = 10002
 			)
+
+SELECT DISTINCT cliente.num_cadastro,
+       cliente.nome,
+	   CONVERT(CHAR(10), locacao.dataLocacao, 103) AS data_locacao,
+
+       DATEDIFF(DAY, locacao.dataLocacao, locacao.dataDevolucao) AS Qtd_dias_alugado,
+	   filme.titulo,
+	   filme.ano
+
+FROM cliente INNER JOIN locacao 
+ON cliente.num_cadastro = locacao.clienteNum_cadastro
+INNER JOIN dvd
+ON dvd.num = locacao.dvdNum
+INNER JOIN filme
+ON filme.id = dvd.filme_id
+WHERE cliente.nome LIKE '%Matilde%'
+
+SELECT es.nome, es.nome_real, fm.titulo 
+FROM estrela es, filme_estrela fe, filme fm
+WHERE es.id = fe.estrela_id
+      AND fm.id = fe.filme_id
+      AND fm.ano = 2015
+ORDER BY es.nome ASC
+
+SELECT DISTINCT fm.titulo, dv.dataFabricacao,
+	   CASE WHEN (YEAR(GETDATE()) - fm.ano) > 6
+	        THEN
+	        CAST((YEAR(GETDATE()) - fm.ano) AS VARCHAR(4)) + ' anos'
+	        ELSE
+			CAST((YEAR(GETDATE()) - fm.ano) AS VARCHAR(4))
+	   END AS anos_de_diferença
+FROM filme fm, dvd dv, filme_estrela fe
+WHERE fm.id = dv.filme_id
+      AND dv.dataFabricacao != '2019-10-18'
+ORDER BY fm.titulo ASC
+
+

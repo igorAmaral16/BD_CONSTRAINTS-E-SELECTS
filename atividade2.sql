@@ -102,3 +102,24 @@ SELECT name, description,
 	DATEDIFF(DAY, data, '2014-09-16') * 79.85 AS custo_total
 	FROM projects WHERE name LIKE '%manutenção%'
 
+
+SELECT DISTINCT us.id, 
+       us.name, 
+	   us.email,
+       prj.id, 
+	   prj.name AS project_name, 
+	   prj.description, 
+	   prj.data
+FROM users us, users_has_projects uhp, projects prj
+WHERE us.id = uhp.users_id
+      AND prj.name LIKE 'Re-folha%'
+
+SELECT DISTINCT prj.name
+FROM projects prj LEFT OUTER JOIN users_has_projects uhp
+ON prj.id = uhp.projects_id
+WHERE  uhp.users_id IS NULL
+
+SELECT us.name
+FROM users us LEFT OUTER JOIN users_has_projects uhp
+ON us.id = uhp.users_id
+WHERE uhp.projects_id IS NULL
